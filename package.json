@@ -1,7 +1,7 @@
 {
-  "name": "new",
+  "name": "react-set-game",
   "version": "1.0.0",
-  "description": "",
+  "description": "set card game built using react",
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
