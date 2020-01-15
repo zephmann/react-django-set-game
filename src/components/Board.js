@@ -3,23 +3,31 @@ import React from "react";
 import "../styles.css";
 
 
-const SetCard = (props) => {
+function SetCard(props) {
   // 0 - number, 1 - shape, 2 - color, 3 - fill
   const shape = props.card[1] === 0 ? "X" : props.card[1] === 1 ? "O" : "S";
   const card_text = Array(props.card[0] + 1).fill(shape);
 
   // compile class names for color and filling
-  let class_names = "card";
-  class_names += " color-" + props.card[2];
-  class_names += " fill-" + props.card[3];
+  let text_classes = "card-text text-center";
+  text_classes += " color-" + props.card[2];
+  text_classes += " fill-" + props.card[3];
 
   // if the card is seleted, add an outline
-  if (props.selected) class_names += " selected";
+  let border_classes = "card m-1 shadow-sm";
+  if (props.selected) 
+    border_classes += " selected";
 
   return (
-    <button className={class_names} onClick={props.onClick}>
-      {card_text}
-    </button>
+    <div className="col-4 col-md-3 pr-1 pl-1 hover-pointer" onClick={props.onClick}>
+      <div className={border_classes}>
+        <div className="card-body mt-2 mb-2">
+          <p className={text_classes}>
+            {card_text}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -43,25 +51,19 @@ class Board extends React.Component {
   render() {
     // render the first twelve shuffled indices of the cards
     return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-          {this.renderSquare(3)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(8)}
-          {this.renderSquare(9)}
-          {this.renderSquare(10)}
-          {this.renderSquare(11)}
-        </div>
+      <div className="row">
+        {this.renderSquare(0)}
+        {this.renderSquare(1)}
+        {this.renderSquare(2)}
+        {this.renderSquare(3)}
+        {this.renderSquare(4)}
+        {this.renderSquare(5)}
+        {this.renderSquare(6)}
+        {this.renderSquare(7)}
+        {this.renderSquare(8)}
+        {this.renderSquare(9)}
+        {this.renderSquare(10)}
+        {this.renderSquare(11)}
       </div>
     );
     

@@ -4,6 +4,22 @@ import Board from "./components/Board"
 
 import "./styles.css";
 
+function SetJumbotron(props) {
+  if (props.set_found === null)
+    return null;
+
+  const jumbo_text = props.set_found ? "you found a chet!" : "nope, not a chet";
+  const jumbo_class = props.set_found ? "true-set" : "false-set";
+
+  return (
+    <section className="jumbotron text-center m-0 py-4">
+      <div className="container">
+        <h2 className={jumbo_class}>{jumbo_text}</h2>
+      </div>
+    </section>
+  );
+};
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +41,7 @@ class Game extends React.Component {
     this.state = {
       indices: current_indices,
       selected: new Set(),
-      set_found: undefined
+      set_found: null
     };
 
     // find all of the possible sets in the current cards
@@ -52,7 +68,7 @@ class Game extends React.Component {
 
     this.setState({ 
       sets: sets,
-      set_found: undefined
+      set_found: null
     });
   }
 
@@ -126,7 +142,7 @@ class Game extends React.Component {
       new_selected.add(i);
     }
 
-    let set_found = undefined;
+    let set_found = null;
     if (new_selected.size === 3) {
       const selected_array = Array.from(new_selected);
       set_found = this.check_set(
@@ -142,19 +158,20 @@ class Game extends React.Component {
 
   render() {
     return (
-      <div className="game">
-        {this.state.set_found === true && <h2>you found a chet!</h2>}
-        {this.state.set_found === false && <h3>nope, not a chet!</h3>}
-        <div className="game-board">
-          <Board
-            cards={this.cards}
-            indices={this.state.indices}
-            selected={this.state.selected}
-            onClick={i => this.handleClick(i)}
-          />
-        </div>
-        <div id="reset-btn">
-          <button onClick={this.shuffleBoard}>Shuffle</button>
+      <div>
+        <SetJumbotron set_found={this.state.set_found} />
+        <div className="py-5 bg-light">
+          <div className="container">
+            <Board
+              cards={this.cards}
+              indices={this.state.indices}
+              selected={this.state.selected}
+              onClick={i => this.handleClick(i)}
+            />
+          </div>
+          <div className="container text-center pt-4">
+            <button className="btn-lg btn-primary" onClick={this.shuffleBoard}>Shuffle</button>
+          </div>
         </div>
       </div>
     );
