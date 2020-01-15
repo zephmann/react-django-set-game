@@ -1,70 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Board from "./components/Board"
 
 import "./styles.css";
-
-function Card(props) {
-  // 0 - number, 1 - shape, 2 - color, 3 - fill
-  const shape = props.card[1] === 0 ? "X" : props.card[1] === 1 ? "O" : "S";
-  const card_text = Array(props.card[0] + 1).fill(shape);
-
-  // compile class names for color and filling
-  let class_names = "card";
-  class_names += " color-" + props.card[2];
-  class_names += " fill-" + props.card[3];
-
-  // if the card is seleted, add an outline
-  if (props.selected) class_names += " selected";
-
-  return (
-    <button className={class_names} onClick={props.onClick}>
-      {card_text}
-    </button>
-  );
-}
-
-class Board extends React.Component {
-  renderSquare(i) {
-    // get the card index from the shuffled array
-    const index = this.props.indices[i];
-
-    // return the card at the index, pass down the onClick
-    // and whether the card is selected or not
-    return (
-      <Card
-        card={this.props.cards[index]}
-        selected={this.props.selected.has(i)}
-        onClick={() => this.props.onClick(i)}
-      />
-    );
-  }
-
-  render() {
-    // render the first twelve shuffled indices of the cards
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-          {this.renderSquare(3)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(8)}
-          {this.renderSquare(9)}
-          {this.renderSquare(10)}
-          {this.renderSquare(11)}
-        </div>
-      </div>
-    );
-  }
-}
 
 class Game extends React.Component {
   constructor(props) {
@@ -87,7 +25,7 @@ class Game extends React.Component {
     this.state = {
       indices: current_indices,
       selected: new Set(),
-      set_found: false
+      set_found: undefined
     };
 
     // find all of the possible sets in the current cards
@@ -112,7 +50,10 @@ class Game extends React.Component {
 
     // ensure a set is present in the cards
 
-    this.setState({ sets: sets });
+    this.setState({ 
+      sets: sets,
+      set_found: undefined
+    });
   }
 
   index_to_card(index) {
@@ -172,8 +113,10 @@ class Game extends React.Component {
   }
 
   handleClick(i) {
-    console.log(i + " clicked!");
 
+    if (this.state.set_found)
+      return;
+    
     let new_selected = this.state.selected;
     if (new_selected.has(i)) {
       new_selected.delete(i);
@@ -183,16 +126,25 @@ class Game extends React.Component {
       new_selected.add(i);
     }
 
-    this.setState({
-      selected: new_selected
-    });
+    let set_found = undefined;
+    if (new_selected.size === 3) {
+      const selected_array = Array.from(new_selected);
+      set_found = this.check_set(
+        selected_array[0], selected_array[1], selected_array[2]
+      );
+    }
 
-    // if 3 selected, check for a set
+    this.setState({
+      selected: new_selected,
+      set_found: set_found
+    });
   }
 
   render() {
     return (
       <div className="game">
+        {this.state.set_found === true && <h2>you found a chet!</h2>}
+        {this.state.set_found === false && <h3>nope, not a chet!</h3>}
         <div className="game-board">
           <Board
             cards={this.cards}
@@ -209,123 +161,4 @@ class Game extends React.Component {
   }
 }
 
-/*
-class Board extends React.Component {
-  renderSquare(i) {
-    return (
-      <Card
-        value={this.props.cards[i]}
-        onClick={() => this.props.onClick(i)}
-      />
-    );
-  }
-
-  render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(9)}
-          {this.renderSquare(10)}
-          {this.renderSquare(11)}
-        </div>
-      </div>
-    );
-  }
-}
-
-class Game extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cards: Array(12).fill(null)
-    };
-  }
-
-  handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-    squares[i] = this.state.xIsNext ? "X" : "O";
-    this.setState({
-      history: history.concat([
-        {
-          squares: squares
-        }
-      ]),
-      stepNumber: history.length,
-      xIsNext: !this.state.xIsNext
-    });
-  }
-
-  jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: step % 2 === 0
-    });
-  }
-
-  render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
-
-    const moves = history.map((step, move) => {
-      const desc = move ? "Go to move #" + move : "Go to game start";
-      return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    });
-
-    let status;
-    if (winner) {
-      status = "Winner: " + winner;
-    } else {
-      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
-    }
-
-    return (
-      <div className="game">
-        <div className="game-board">
-          <Board squares={current.squares} onClick={i => this.handleClick(i)} />
-        </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <ol>{moves}</ol>
-        </div>
-      </div>
-    );
-  }
-}
-*/
-
-// ========================================
-
 ReactDOM.render(<Game />, document.getElementById("root"));
-
-function compare_sets(set_a, set_b) {
-  if (set_a.size !== set_b.size) return false;
-
-  for (var a of set_a) if (!set_b.has(a)) return false;
-
-  return true;
-}
