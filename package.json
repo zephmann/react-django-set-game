@@ -4,6 +4,10 @@
   "description": "set card game built using react",
   "keywords": [],
   "main": "src/index.js",
+  "engines": {
+    "npm": "6.13.4",
+    "node": "13.6.0"
+  },
   "dependencies": {
     "bootstrap": "^4.4.1",
     "react": "16.8.6",
