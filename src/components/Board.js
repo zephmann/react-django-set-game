@@ -15,8 +15,13 @@ function SetCard(props) {
 
   // if the card is seleted, add an outline
   let border_classes = "card m-1 shadow-sm";
-  if (props.selected) 
+  if (props.selected) {
     border_classes += " selected";
+    if(props.set_found === true)
+      border_classes += " true-set";
+    else if (props.set_found === false)
+      border_classes += " false-set";
+  }
 
   return (
     <div className="col-4 col-md-3 pr-1 pl-1 hover-pointer" onClick={props.onClick}>
@@ -43,6 +48,7 @@ class Board extends React.Component {
       <SetCard
         card={this.props.cards[index]}
         selected={this.props.selected.has(i)}
+        set_found={this.props.set_found}
         onClick={() => this.props.onClick(i)}
       />
     );

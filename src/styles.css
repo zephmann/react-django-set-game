@@ -8,12 +8,11 @@
   max-height: 80px;
 }
 
-.true-set {
-  font-family: cursive;
+::selection {
+  background: transparent;
 }
-
-.false-set {
-  font-family: monospace;
+::-moz-selection {
+  background: transparent;
 }
 
 .hover-pointer {
@@ -21,7 +20,15 @@
 }
 
 .selected {
-  border: 3px solid red;
+  border: 3px solid lightblue;
+}
+
+.true-set {
+  border-color: lightgreen;
+}
+
+.false-set {
+  border-color: red;
 }
 
 .color-0 {
@@ -37,10 +44,10 @@
 }
 
 .fill-0 {
-  font-style: italic;
-  font-family: serif;
-  font-size: 15px;
-  margin-top: 5px;
+  font-style: oblique;
+  font-family: monospace;
+  font-size: 16px;
+  margin-top: 0px;
 }
 
 .fill-1 {
@@ -53,4 +60,6 @@
 .fill-2 {
   font-family: cursive;
   font-size: 20px;
+  font-weight: bold;
+  margin-top: -3px;
 }

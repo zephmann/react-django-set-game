@@ -4,103 +4,133 @@ import Board from "./components/Board"
 
 import "./styles.css";
 
-function SetJumbotron(props) {
-  if (props.set_found === null)
-    return null;
 
-  const jumbo_text = props.set_found ? "you found a chet!" : "nope, not a chet";
-  const jumbo_class = props.set_found ? "true-set" : "false-set";
+// hard-coded cards. 4 dimensions x 3 possibilities = 81 cards.
+const INITAL_CARDS = [
+  [0, 0, 0, 0], [1, 0, 0, 0], [2, 0, 0, 0], [0, 1, 0, 0], [1, 1, 0, 0], [2, 1, 0, 0],
+  [0, 2, 0, 0], [1, 2, 0, 0], [2, 2, 0, 0], [0, 0, 1, 0], [1, 0, 1, 0], [2, 0, 1, 0],
+  [0, 1, 1, 0], [1, 1, 1, 0], [2, 1, 1, 0], [0, 2, 1, 0], [1, 2, 1, 0], [2, 2, 1, 0],
+  [0, 0, 2, 0], [1, 0, 2, 0], [2, 0, 2, 0], [0, 1, 2, 0], [1, 1, 2, 0], [2, 1, 2, 0],
+  [0, 2, 2, 0], [1, 2, 2, 0], [2, 2, 2, 0], [0, 0, 0, 1], [1, 0, 0, 1], [2, 0, 0, 1],
+  [0, 1, 0, 1], [1, 1, 0, 1], [2, 1, 0, 1], [0, 2, 0, 1], [1, 2, 0, 1], [2, 2, 0, 1],
+  [0, 0, 1, 1], [1, 0, 1, 1], [2, 0, 1, 1], [0, 1, 1, 1], [1, 1, 1, 1], [2, 1, 1, 1],
+  [0, 2, 1, 1], [1, 2, 1, 1], [2, 2, 1, 1], [0, 0, 2, 1], [1, 0, 2, 1], [2, 0, 2, 1],
+  [0, 1, 2, 1], [1, 1, 2, 1], [2, 1, 2, 1], [0, 2, 2, 1], [1, 2, 2, 1], [2, 2, 2, 1],
+  [0, 0, 0, 2], [1, 0, 0, 2], [2, 0, 0, 2], [0, 1, 0, 2], [1, 1, 0, 2], [2, 1, 0, 2],
+  [0, 2, 0, 2], [1, 2, 0, 2], [2, 2, 0, 2], [0, 0, 1, 2], [1, 0, 1, 2], [2, 0, 1, 2],
+  [0, 1, 1, 2], [1, 1, 1, 2], [2, 1, 1, 2], [0, 2, 1, 2], [1, 2, 1, 2], [2, 2, 1, 2],
+  [0, 0, 2, 2], [1, 0, 2, 2], [2, 0, 2, 2], [0, 1, 2, 2], [1, 1, 2, 2], [2, 1, 2, 2],
+  [0, 2, 2, 2], [1, 2, 2, 2], [2, 2, 2, 2]
+];
 
-  return (
-    <section className="jumbotron text-center m-0 py-4">
-      <div className="container">
-        <h2 className={jumbo_class}>{jumbo_text}</h2>
-      </div>
-    </section>
-  );
-};
+
+function swap(arr, a, b) {
+  let temp = arr[a];
+  arr[a] = arr[b];
+  arr[b] = temp;
+}
+
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
 
-    // construct all of the cards in the deck
     // 0 - number, 1 - shape, 2 - color, 3 - fill
-    // use arrays to make it easier to check for sets
-    this.cards = Array.from(Array(81), (x, i) => {
-      return this.index_to_card(i);
-    });
-
-    // initialize the indices used for the game board
-    const current_indices = [...Array(81).keys()].sort(
-      (a, b) => Math.random() * 2 - 1
-    );
+    this.cards = INITAL_CARDS;
 
     // set up the component's state, the cards in the deck
     // will never change so they don't need to be in the state
     this.state = {
-      indices: current_indices,
+      indices: [],
       selected: new Set(),
-      set_found: null
+      set_found: null,
+      is_board_shuffled: false
     };
 
-    // find all of the possible sets in the current cards
-    let sets = this.compile_sets();
-
-    // ensure a set is present in the cards
-
-    this.setState({ sets: sets });
-
     this.shuffleBoard = this.shuffleBoard.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  componentDidMount() {
+    this.shuffleBoard();
   }
 
   shuffleBoard() {
-    // shuffle the indices
+    // reset the state
     this.setState({
-      indices: this.state.indices.sort((a, b) => Math.random() * 2 - 1),
-      selected: new Set()
+      selected: new Set(),
+      set_found: null,
+      is_board_shuffled: false
     });
 
-    // find all of the possible sets in the current cards
-    let sets = this.compile_sets();
-
-    // ensure a set is present in the cards
-
-    this.setState({ 
-      sets: sets,
-      set_found: null
-    });
-  }
-
-  index_to_card(index) {
-    return [
-      index % 3,
-      Math.floor(index / 3) % 3,
-      Math.floor(index / 9) % 3,
-      Math.floor(index / 27)
+    // to ensure that at least one set is always present, select a random card
+    // and construct a set around it. pick four random values for the four
+    // characteristics. then pick a random number 1-15 and use this as bit
+    // masking for the characteristics that will be "different" vs "same". 
+    // don't use 0 because the cards would be all the same.
+    let set_card_1 = [
+      Math.floor(Math.random() * 3),
+      Math.floor(Math.random() * 3),
+      Math.floor(Math.random() * 3),
+      Math.floor(Math.random() * 3)
     ];
-  }
+    let set_card_2 = [...set_card_1];
+    let set_card_3 = [...set_card_1];
 
-  card_to_index(card) {
-    return card[3] * 27 + card[2] * 9 + card[1] * 3 + card[0];
-  }
+    let diff_bit_mask = Math.ceil(Math.random() * 15);
 
-  compile_sets() {
-    // iterate through all shuffled indices
-    // checking if there are any sets present
-    let sets = [];
-    for (let k = 2; k < 12; k++) {
-      for (let j = 1; j < k; j++) {
-        for (let i = 0; i < j; i++) {
-          if (this.check_set(i, j, k)) {
-            console.log([i, j, k]);
-            sets.push(new Set([i, j, k]));
-          }
-        }
-      }
+    // number, shape, color, fill
+    if (diff_bit_mask & 1) {
+      set_card_2[0] = (set_card_1[0] + 1)%3;
+      set_card_3[0] = (set_card_1[0] + 2)%3;
+    }
+    if (diff_bit_mask & 2) {
+      set_card_2[1] = (set_card_1[1] + 1)%3;
+      set_card_3[1] = (set_card_1[1] + 2)%3;
+    }
+    if (diff_bit_mask & 4) {
+      set_card_2[2] = (set_card_1[2] + 1)%3;
+      set_card_3[2] = (set_card_1[2] + 2)%3;
+    }
+    if (diff_bit_mask & 8) {
+      set_card_2[3] = (set_card_1[3] + 1)%3;
+      set_card_3[3] = (set_card_1[3] + 2)%3;
     }
 
-    return sets;
+    // calc the corresponding indices
+    let index_1 = 0;
+    let index_2 = 0;
+    let index_3 = 0;
+    let pow_3 = 1;
+    for(let i = 0; i < 4; i++) {
+      index_1 += set_card_1[i] * pow_3;
+      index_2 += set_card_2[i] * pow_3;
+      index_3 += set_card_3[i] * pow_3;
+      pow_3 *= 3;
+    }
+
+    // initialize the indices used for the game board
+    // remove the three selected indices, shuffle the rest, and
+    // take the first nine indices
+    let indices = [...this.cards.keys()];
+
+    swap(indices, 0, index_1);
+    swap(indices, 1, index_2);
+    swap(indices, 2, index_3);
+
+    for(let i = 3, j=78; i < 12; i++, j--) {
+      let index = Math.floor(Math.random() * j) + i;
+      swap(indices, i, index);
+    }
+
+    let current_indices = indices.slice(0, 12);
+    current_indices.sort((a,b) => Math.random() * 2 -1);
+
+    // shuffle the indices
+    this.setState({
+      indices: current_indices,
+      is_board_shuffled: true
+    });
   }
 
   check_set(a, b, c) {
@@ -109,19 +139,20 @@ class Game extends React.Component {
     const card_b = this.cards[this.state.indices[b]];
     const card_c = this.cards[this.state.indices[c]];
 
-    // check all the dimenions of differences in the cards
-    // for all the same, the differences will be 0, for all
-    // different, the differences will be in (-2, -1, 1, 2).
-    // use Boolean to convert all non-zero values
-    // to 1 to compare
+    // check all the differences of the characteristic dimensions of the 
+    // selected cards.
     for (let i = 0; i < 4; i++) {
-      // check the difference between the 3 cards
-      const dif_ab = Boolean(card_a[i] - card_b[i]);
-      const dif_bc = Boolean(card_b[i] - card_c[i]);
-      const dif_ca = Boolean(card_c[i] - card_a[i]);
+      // check two pairs first. 
+      // if one pairs don't match, then eliminate it right away.
+      // otherwise check the remaining pair against one of the first two pairs.
+      const dif_ab = card_a[i] !== card_b[i];
+      const dif_bc = card_b[i] !== card_c[i];
+      if (dif_ab !== dif_bc)
+        return false;
 
-      // ensure either all are non-zero or all are zero
-      if (dif_ab !== dif_bc || dif_bc !== dif_ca || dif_ca !== dif_ab)
+      // safe to assume ab and bc match, so if ab != ca then bc != ca
+      const dif_ca = card_c[i] !== card_a[i];
+      if (dif_ab !== dif_ca)
         return false;
     }
 
@@ -129,11 +160,16 @@ class Game extends React.Component {
   }
 
   handleClick(i) {
-
+    // if the user has already found a set, lock the board
     if (this.state.set_found)
       return;
     
+    // get the newly selected index
     let new_selected = this.state.selected;
+
+    // if card was already selected, then deselect it
+    // else if 3 other cards are already selected, simply return
+    // else add the card to the selected indices
     if (new_selected.has(i)) {
       new_selected.delete(i);
     } else if (this.state.selected.size === 3) {
@@ -142,6 +178,7 @@ class Game extends React.Component {
       new_selected.add(i);
     }
 
+    // check if a set has been found
     let set_found = null;
     if (new_selected.size === 3) {
       const selected_array = Array.from(new_selected);
@@ -150,6 +187,7 @@ class Game extends React.Component {
       );
     }
 
+    // update the state with the new list of selected indices and set found flag
     this.setState({
       selected: new_selected,
       set_found: set_found
@@ -157,20 +195,30 @@ class Game extends React.Component {
   }
 
   render() {
+    // if board hasn't finished shuffling, then return nothing
+    if(!this.state.is_board_shuffled) 
+      return null;
+
+    // render the board and the shuffle button
     return (
       <div>
-        <SetJumbotron set_found={this.state.set_found} />
         <div className="py-5 bg-light">
           <div className="container">
             <Board
               cards={this.cards}
               indices={this.state.indices}
               selected={this.state.selected}
+              set_found={this.state.set_found}
               onClick={i => this.handleClick(i)}
             />
           </div>
           <div className="container text-center pt-4">
-            <button className="btn-lg btn-primary" onClick={this.shuffleBoard}>Shuffle</button>
+            <button 
+              className="btn-lg btn-primary" 
+              onClick={this.shuffleBoard}
+            >
+              Shuffle
+            </button>
           </div>
         </div>
       </div>
