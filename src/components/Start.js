@@ -84,11 +84,14 @@ class StartScreen extends React.Component {
     let card_1_classes = "";
     let card_2_classes = "";
     let card_3_classes = "";
+    // eslint-disable-next-line
     switch (this.props.start_countdown) {
       case 3:
         card_3_classes = "hidden";
+      // eslint-disable-next-line
       case 2:
         card_2_classes = "hidden";
+      // eslint-disable-next-line
       case 1:
         card_1_classes = "hidden";
     }
