@@ -154,7 +154,7 @@ class Game extends React.Component {
     });
   }
 
-  check_set(a, b, c) {
+  checkSet(a, b, c) {
     // get the cards from the shuffled indices
     const card_a = DECK[this.state.indices[a]];
     const card_b = DECK[this.state.indices[b]];
@@ -203,7 +203,7 @@ class Game extends React.Component {
     let set_found = null;
     if (new_selected.size === 3) {
       const selected_array = Array.from(new_selected);
-      set_found = this.check_set(
+      set_found = this.checkSet(
         selected_array[0], selected_array[1], selected_array[2]
       );
     }

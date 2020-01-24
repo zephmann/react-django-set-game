@@ -14,7 +14,8 @@ class StartScreen extends React.Component {
     // set up the component's state, the cards in the deck
     // will never change so they don't need to be in the state
     this.state = {
-      card_indices: []
+      card_indices: [],
+      start_clicked: false
     };
 
     this.initCards = this.initCards.bind(this);
@@ -76,27 +77,41 @@ class StartScreen extends React.Component {
     });
   }
 
-  start() {
-    console.log("starting!");
-  }
-
   render() {
     // if three cards haven't finished shuffling, then return nothing
     if(!this.state.card_indices.length) 
       return null;
 
+    let card_1_classes = "";
+    let card_2_classes = "";
+    let card_3_classes = "";
+    switch (this.props.start_countdown) {
+      case 3:
+        card_3_classes = "hidden";
+      case 2:
+        card_2_classes = "hidden";
+      case 1:
+        card_1_classes = "hidden";
+    }
+    
     // render the board and the shuffle button
     return (
       <div>
-        <section class="jumbotron text-center pb-4 pt-5 m-0">
-          <div class="container">
-            <h1 class="cursive-font">Chet!</h1>
+        <section className="jumbotron text-center pb-4 pt-5 m-0">
+          <div className="container">
+            <h1 className="cursive-font">Chet!</h1>
           </div>
           <div className="container">
             <div className="row">
-              <StartCard card={DECK[this.state.card_indices[0]]} />
-              <StartCard card={DECK[this.state.card_indices[1]]} />
-              <StartCard card={DECK[this.state.card_indices[2]]} />
+              <StartCard 
+                card={DECK[this.state.card_indices[0]]} 
+                card_classes={card_1_classes} />
+              <StartCard 
+                card={DECK[this.state.card_indices[1]]} 
+                card_classes={card_2_classes} />
+              <StartCard 
+                card={DECK[this.state.card_indices[2]]} 
+                card_classes={card_3_classes} />
             </div>
           </div>
         </section>
@@ -106,7 +121,7 @@ class StartScreen extends React.Component {
           <div className="container text-center pt-4 pb-5">
             <button 
               className="btn-lg btn-primary" 
-              onClick={this.shuffleBoard}
+              onClick={this.props.onStartClicked}
             >
               Start!
             </button>

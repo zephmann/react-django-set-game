@@ -40,9 +40,13 @@ export const StartCard = (props) => {
   text_classes += " color-" + props.card[2];
   text_classes += " fill-" + props.card[3];
 
+  let card_classes = "card m-1 shadow-sm";
+  if (props.card_classes)
+    card_classes += " " + props.card_classes;
+
   return (
     <div className="col-4 pr-1 pl-1">
-      <div className="card m-1 shadow-sm">
+      <div className={card_classes}>
         <div className="card-body mt-2 mb-2">
           <p className={text_classes}>
             {card_text}
