@@ -9,8 +9,17 @@
   font-size: 80px;
 }
 
+.btn, .btn-lg {
+  font-family: 'Neucha', cursive;
+}
+
 .card {
   max-height: 80px;
+}
+
+/* start screen classes */
+.cycle-cards {
+
 }
 
 .hidden {
@@ -18,11 +27,13 @@
   opacity: 0;
   transition: visibility 0s 0.5s, opacity 0.5s linear;
 }
+/* end start screen classes */
 
-::selection {
+/* game screen classes */
+.card p::selection {
   background: transparent;
 }
-::-moz-selection {
+.card p::-moz-selection {
   background: transparent;
 }
 
@@ -74,3 +85,4 @@
   font-weight: bold;
   margin-top: -3px;
 }
+/* end game screen classes */

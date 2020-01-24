@@ -5,6 +5,9 @@ import {DECK, SetCard} from "./Card";
 import "../styles.css";
 
 
+const TIME_LIMIT = 60;
+
+
 function swap(arr, a, b) {
   let temp = arr[a];
   arr[a] = arr[b];
@@ -65,15 +68,51 @@ class Game extends React.Component {
       indices: [],
       selected: new Set(),
       set_found: null,
-      is_board_shuffled: false
+      is_board_shuffled: false,
+      timer: -1,
+      num_found: -1,
+      num_skipped: -1
     };
 
+    this.onSkipped = this.onSkipped.bind(this);
     this.shuffleBoard = this.shuffleBoard.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.tick = this.tick.bind(this);
   }
 
   componentDidMount() {
+    console.log("component did mount! resetting!");
+
     this.shuffleBoard();
+
+    this.setState({
+      timer: TIME_LIMIT,
+      num_found: 0,
+      num_skipped: 0
+    });
+
+    setTimeout(this.tick, 1000);
+  }
+
+  tick() {
+    const next_tick = this.state.timer - 1;
+
+    this.setState({
+      timer: next_tick
+    });
+
+    if (next_tick)
+      setTimeout(this.tick, 1000);
+    else
+      this.props.onGameFinished(this.state.num_found, this.state.num_skipped);
+  }
+
+  onSkipped() {
+    this.shuffleBoard();
+
+    this.setState({
+      num_skipped: this.state.num_skipped + 1
+    });
   }
 
   shuffleBoard() {
@@ -102,20 +141,20 @@ class Game extends React.Component {
 
     // number, shape, color, fill
     if (diff_bit_mask & 1) {
-      set_card_2[0] = (set_card_1[0] + 1)%3;
-      set_card_3[0] = (set_card_1[0] + 2)%3;
+      set_card_2[0] = (set_card_1[0] + 1) % 3;
+      set_card_3[0] = (set_card_1[0] + 2) % 3;
     }
     if (diff_bit_mask & 2) {
-      set_card_2[1] = (set_card_1[1] + 1)%3;
-      set_card_3[1] = (set_card_1[1] + 2)%3;
+      set_card_2[1] = (set_card_1[1] + 1) % 3;
+      set_card_3[1] = (set_card_1[1] + 2) % 3;
     }
     if (diff_bit_mask & 4) {
-      set_card_2[2] = (set_card_1[2] + 1)%3;
-      set_card_3[2] = (set_card_1[2] + 2)%3;
+      set_card_2[2] = (set_card_1[2] + 1) % 3;
+      set_card_3[2] = (set_card_1[2] + 2) % 3;
     }
     if (diff_bit_mask & 8) {
-      set_card_2[3] = (set_card_1[3] + 1)%3;
-      set_card_3[3] = (set_card_1[3] + 2)%3;
+      set_card_2[3] = (set_card_1[3] + 1) % 3;
+      set_card_3[3] = (set_card_1[3] + 2) % 3;
     }
 
     // calc the corresponding indices
@@ -201,17 +240,24 @@ class Game extends React.Component {
 
     // check if a set has been found
     let set_found = null;
+    let num_found = this.state.num_found;
     if (new_selected.size === 3) {
       const selected_array = Array.from(new_selected);
       set_found = this.checkSet(
         selected_array[0], selected_array[1], selected_array[2]
       );
+
+      if(set_found) {
+        num_found++;
+        setTimeout(this.shuffleBoard, 250);
+      }
     }
 
     // update the state with the new list of selected indices and set found flag
     this.setState({
       selected: new_selected,
-      set_found: set_found
+      set_found: set_found,
+      num_found: num_found
     });
   }
 
@@ -225,6 +271,11 @@ class Game extends React.Component {
       <div>
         <div className="py-5 bg-light">
           <div className="container">
+            <h2>Timer: {this.state.timer}</h2>
+            <h2>Score: {this.state.num_found}</h2>
+            <h2>Skipped: {this.state.num_skipped}</h2>
+          </div>
+          <div className="container">
             <Board
               indices={this.state.indices}
               selected={this.state.selected}
@@ -234,10 +285,9 @@ class Game extends React.Component {
           </div>
           <div className="container text-center pt-4">
             <button 
-              className="btn-lg btn-primary" 
-              onClick={this.shuffleBoard}
-            >
-              Shuffle
+              className="btn-lg btn-warning" 
+              onClick={this.onSkipped} >
+              SKIP
             </button>
           </div>
         </div>

@@ -14,8 +14,7 @@ class StartScreen extends React.Component {
     // set up the component's state, the cards in the deck
     // will never change so they don't need to be in the state
     this.state = {
-      card_indices: [],
-      start_clicked: false
+      card_indices: []
     };
 
     this.initCards = this.initCards.bind(this);
@@ -79,7 +78,7 @@ class StartScreen extends React.Component {
 
   render() {
     // if three cards haven't finished shuffling, then return nothing
-    if(!this.state.card_indices.length) 
+    if( !this.state.card_indices.length )
       return null;
 
     let card_1_classes = "";
@@ -123,7 +122,7 @@ class StartScreen extends React.Component {
               className="btn-lg btn-primary" 
               onClick={this.props.onStartClicked}
             >
-              Start!
+              START GAME
             </button>
           </div>
         </div>
