@@ -4,6 +4,11 @@
   }
 }
 
+.cursive-font {
+  font-family: 'Neucha', cursive;
+  font-size: 80px;
+}
+
 .card {
   max-height: 80px;
 }
