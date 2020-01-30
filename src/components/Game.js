@@ -184,7 +184,7 @@ class Game extends React.Component {
     }
 
     let current_indices = indices.slice(0, 12);
-    current_indices.sort((a,b) => Math.random() * 2 -1);
+    current_indices.sort((a,b) => Math.random() * 2 - 1);
 
     // shuffle the indices
     this.setState({

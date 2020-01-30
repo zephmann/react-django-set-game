@@ -16,15 +16,13 @@ class StartScreen extends React.Component {
     this.state = {
       card_indices: []
     };
-
-    this.initCards = this.initCards.bind(this);
   }
 
   componentDidMount() {
     this.initCards();
   }
 
-  initCards() {
+  initCards = () => {
     // to ensure that at least one set is always present, select a random card
     // and construct a set around it. pick four random values for the four
     // characteristics. then pick a random number 1-15 and use this as bit
@@ -74,7 +72,7 @@ class StartScreen extends React.Component {
     this.setState({
       card_indices: [index_1, index_2, index_3, 0, 0, 0]
     });
-  }
+  };
 
   render() {
     // if three cards haven't finished shuffling, then return nothing
@@ -123,8 +121,7 @@ class StartScreen extends React.Component {
           <div className="container text-center pt-4 pb-5">
             <button 
               className="btn-lg btn-primary" 
-              onClick={this.props.onStartClicked}
-            >
+              onClick={this.props.onStartClicked} >
               START GAME
             </button>
           </div>

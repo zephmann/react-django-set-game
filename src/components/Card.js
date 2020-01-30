@@ -45,8 +45,41 @@ export const StartCard = (props) => {
     card_classes += " " + props.card_classes;
 
   return (
-    <div className="col-4 pr-1 pl-1">
+    <div className="col-12 col-sm-4 pr-1 pl-1 start-card">
       <div className={card_classes}>
+        <div className="card-body mt-2 mb-2">
+          <p className={text_classes}>
+            {card_text}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+export const ExampleCard = (props) => {
+  const card = DECK[props.card_index];
+
+  // 0 - number, 1 - shape, 2 - color, 3 - fill
+  const shape = card[1] === 0 ? "X" : card[1] === 1 ? "O" : "S";
+  const card_text = Array(card[0] + 1).fill(shape);
+
+  // compile class names for color and filling
+  let text_classes = "card-text text-center";
+  text_classes += " color-" + card[2];
+  text_classes += " fill-" + card[3];
+
+  // if the card is seleted, add an outline
+  let border_classes = "card m-1 shadow-sm";
+  if(props.set_found === true)
+    border_classes += " true-set";
+  else if (props.set_found === false)
+    border_classes += " false-set";
+
+  return (
+    <div className="col-12 col-sm-4 pr-1 pl-1">
+      <div className={border_classes}>
         <div className="card-body mt-2 mb-2">
           <p className={text_classes}>
             {card_text}

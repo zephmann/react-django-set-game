@@ -6,15 +6,47 @@
 
 .cursive-font {
   font-family: 'Neucha', cursive;
-  font-size: 80px;
+}
+
+.mono-font {
+  font-family: monospace;
+}
+
+h1.cursive-font {
+  font-size: 6em;
+}
+
+h3.cursive-font {
+  font-size: 2em;
+  cursor: pointer;
+}
+
+input[type="text"]
+{
+    font-size: 4em;
+    font-family: monospace;
+}
+
+label
+{
+    font-size: 3em;
+    margin-right: 15px;
 }
 
 .btn, .btn-lg {
   font-family: 'Neucha', cursive;
 }
 
+.nav-link {
+  cursor: pointer;
+}
+
 .card {
   max-height: 80px;
+}
+
+.rounded {
+  border-width: 3px !important;
 }
 
 /* start screen classes */
@@ -28,6 +60,50 @@
   transition: visibility 0s 0.5s, opacity 0.5s linear;
 }
 /* end start screen classes */
+
+/* about screen classes */
+
+.about-row-1 {
+  background-color: #fdd;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.about-row-2 {
+  background-color: #dfd;
+  margin-left: 5px;
+  margin-right: 5px;  
+}
+
+.about-row-3 {
+  background-color: #ddf;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.about-row-4 {
+  background-color: #ffd;
+  margin-left: 5px;
+  margin-right: 5px;  
+}
+/* end about screen classes */
+
+.high-score-list {
+  max-width: 400px;
+  width: 100%;
+}
+
+#gold {
+  background-color: gold;
+}
+
+#silver {
+  background-color: silver;
+}
+
+#bronze {
+  background-color: #cd7f32;
+}
 
 /* game screen classes */
 .card p::selection {
