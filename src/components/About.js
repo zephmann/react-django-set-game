@@ -21,17 +21,17 @@ export const About = (props) => {
           <div className="container pt-0">
             <div className="row">
               <ExampleCard
-                card_index={0 + 0 + 9 + 0}
+                card_index={0 + 0 + 0 + 0}
                 selected={true}
                 set_found={true}
               />
               <ExampleCard
-                card_index={1 + 3 + 9 + 27}
+                card_index={1 + 0 + 9 + 27}
                 selected={true}
                 set_found={true}
               />
               <ExampleCard
-                card_index={2 + 6 + 9 + 54}
+                card_index={2 + 0 + 18 + 54}
                 selected={true}
                 set_found={true}
               />

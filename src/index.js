@@ -4,6 +4,7 @@ import axios from "axios";
 import {Header} from "./components/Header";
 import StartScreen from "./components/Home";
 import Game from "./components/Game";
+import Practice from "./components/Practice";
 import {FinalScore, HighScores} from "./components/Score";
 import {About} from "./components/About";
 
@@ -33,7 +34,9 @@ class App extends React.Component {
   refreshScores = () => {
     axios
       .get("http://localhost:8000/api/high_scores/")
-      .then(res => this.sortScores(res))
+      .then(res => {
+        this.setState({ high_scores: res.data });
+      })
       .catch(err => console.log(err))
   }
 
@@ -50,41 +53,14 @@ class App extends React.Component {
       name: this.state.user_name
     }
 
-    if (this.state.high_scores.length === 10) {
-      const prev_id = this.state.high_scores[9].id;
-
-      axios
-        .post("http://localhost:8000/api/high_scores/", new_score)
-        .then(axios.delete("http://localhost:8000/api/high_scores/" + prev_id))
-        .then(this.refreshScores)
-        .catch(err => console.log(err));
-
-      console.log("DELETED!")
-    }
-
-    else {
-      axios
-        .post("http://localhost:8000/api/high_scores/", new_score)
-        .then(this.refreshScores)
-        .catch(err => console.log(err));
-
-      console.log("Didn't need to delete!")
-    }
+    axios
+      .post("http://localhost:8000/api/high_scores/", new_score)
+      .then(this.refreshScores)
+      .catch(err => console.log(err));
 
     this.setState({
       score_submitted: true
     })
-  }
-
-  sortScores = (res) => {
-    const scores = res.data.sort((a, b) => {
-      if (a.score !== b.score) 
-        return b.score - a.score;
-      return (b.skipped - a.skipped);
-
-    })
-
-    this.setState({ high_scores: scores });
   }
 
   onStartClicked = () => {
@@ -129,6 +105,12 @@ class App extends React.Component {
   onAboutClicked = () => {
     this.setState({
       index: "about"
+    });
+  };
+
+  onPracticeClicked = () => {
+    this.setState({
+      index: "practice"
     });
   };
 
@@ -185,20 +167,26 @@ class App extends React.Component {
         score_submitted={this.state.score_submitted} />;
     }
 
-    // render a list of high scores
-    else if (this.state.index === "high_scores")
-      main_body = <HighScores scores={this.state.high_scores} />;
-
-    // // render the about page
+    // render the about page
     else if (this.state.index === "about")
       main_body = <About 
         onStartClicked={this.onStartClicked} />;
 
+    // render the practice game
+    else if (this.state.index === "practice")
+      main_body = <Practice />;
+
+    // render a list of high scores
+    else if (this.state.index === "high_scores")
+      main_body = <HighScores scores={this.state.high_scores} />;
+    
     return (
       <div>
         <Header 
+          currentPage={this.state.index}
           onHomeClicked={this.onHomeClicked}
           onAboutClicked={this.onAboutClicked}
+          onPracticeClicked={this.onPracticeClicked}
           onHighScoresClicked={this.onHighScoresClicked} />
         <main role="main">
           {main_body}

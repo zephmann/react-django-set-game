@@ -4,5 +4,5 @@ from rest_framework import viewsets
 
 
 class HighScoreListCreate(viewsets.ModelViewSet):
-    queryset = HighScore.objects.all()
+    queryset = HighScore.objects.order_by("score", "skipped", "timestamp")[:100]
     serializer_class = HighScoreSerializer

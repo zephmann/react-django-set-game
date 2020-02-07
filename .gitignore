@@ -2,5 +2,6 @@ node_modules/
 yarn.lock
 public/static_backup.html
 
+*.sqlite3
 *.pyc
 __pycache__
