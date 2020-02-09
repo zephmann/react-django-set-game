@@ -170,6 +170,7 @@ class App extends React.Component {
     // render the about page
     else if (this.state.index === "about")
       main_body = <About 
+        onPracticeClicked={this.onPracticeClicked}
         onStartClicked={this.onStartClicked} />;
 
     // render the practice game

@@ -133,7 +133,7 @@ export const About = (props) => {
             </div>
             <div className="container pt-3 m-0">
               <h4 className="cursive-font">
-                two&nbsp;circles,&nbsp;one&nbsp;squiqqle -
+                two&nbsp;circles,&nbsp;one&nbsp;squiggle -
                 two&nbsp;medium,&nbsp;one&nbsp;big
               </h4>
             </div>
@@ -187,7 +187,7 @@ export const About = (props) => {
               <h4 className="cursive-font">
                 two&nbsp;blues,&nbsp;one&nbsp;green -
                 two&nbsp;smalls,&nbsp;one&nbsp;medium -
-                two&nbsp;Xs,&nbsp;one&nbsp;squiqqle
+                two&nbsp;Xs,&nbsp;one&nbsp;squiggle
               </h4>
             </div>
           </div>
@@ -197,7 +197,12 @@ export const About = (props) => {
       <div className="bg-light">     
         <div className="container text-center pt-5 pb-4">
           <button 
-            className="btn-lg btn-primary" 
+            className="btn-lg btn-primary mr-1" 
+            onClick={props.onPracticeClicked} >
+            PRACTICE
+          </button>
+          <button 
+            className="btn-lg btn-primary ml-1" 
             onClick={props.onStartClicked} >
             START GAME
           </button>

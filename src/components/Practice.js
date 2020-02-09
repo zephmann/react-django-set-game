@@ -192,10 +192,10 @@ class Practice extends React.Component {
       return null;
 
     let dimensions = <div className="container text-center pt-4 cursive-font">
-        <h2>Number:</h2>
-        <h2>Shape:</h2>
-        <h2>Color:</h2>
-        <h2>Size:</h2>
+        <h2>number:</h2>
+        <h2>shape:</h2>
+        <h2>color:</h2>
+        <h2>size:</h2>
       </div>;
 
     if (this.state.set_found != null) {
@@ -206,10 +206,10 @@ class Practice extends React.Component {
       
 
       dimensions = <div className="container text-center pt-4 cursive-font">
-        <h2 className={number_classes}>Number: {this.state.number}</h2>
-        <h2 className={shape_classes}>Shape: {this.state.shape}</h2>
-        <h2 className={color_classes}>Color: {this.state.color}</h2>
-        <h2 className={size_classes}>Size: {this.state.size}</h2>
+        <h2 className={number_classes}>number: {this.state.number}</h2>
+        <h2 className={shape_classes}>shape: {this.state.shape}</h2>
+        <h2 className={color_classes}>color: {this.state.color}</h2>
+        <h2 className={size_classes}>size: {this.state.size}</h2>
       </div>
     }
 
@@ -230,7 +230,7 @@ class Practice extends React.Component {
             <button 
               className="btn-lg btn-primary mr-1" 
               onClick={this.showSet} >
-              HELP
+              SHOW ME
             </button>
             <button 
               className="btn-lg btn-primary ml-1" 
