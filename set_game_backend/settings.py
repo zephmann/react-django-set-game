@@ -25,7 +25,7 @@ SECRET_KEY = '%sk=q$1+*52!!n6zmth15p=dzt^b&t7c3(+n&6mk4a(2c^@h9^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['react-django-set-game.herokuapp.com', '127.0.0.1:8000']
+ALLOWED_HOSTS = ['react-django-set-game.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -126,4 +126,5 @@ USE_TZ = True
 # we whitelist localhost:3000 because that's where frontend will be served
 CORS_ORIGIN_WHITELIST = (
      "http://localhost:3000",
+     "http://react-django-set-game.herokuapp.com:3000",
  )
