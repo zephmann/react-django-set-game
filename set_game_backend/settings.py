@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '%sk=q$1+*52!!n6zmth15p=dzt^b&t7c3(+n&6mk4a(2c^@h9^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['react-django-set-game.herokuapp.com', '127.0.0.1:8000']
 
