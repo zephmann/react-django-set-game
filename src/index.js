@@ -33,7 +33,8 @@ class App extends React.Component {
 
   refreshScores = () => {
     axios
-      .get("http://localhost:8000/api/high_scores/")
+      //.get("http://localhost:8000/api/high_scores/")
+      .get("http://react-django-set-game.herokuapp.com:8000/api/high_scores/")
       .then(res => {
         this.setState({ high_scores: res.data });
       })
@@ -54,7 +55,10 @@ class App extends React.Component {
     }
 
     axios
-      .post("http://localhost:8000/api/high_scores/", new_score)
+      //.post("http://localhost:8000/api/high_scores/", new_score)
+      .post(
+        "http://react-django-set-game.herokuapp.com:8000/api/high_scores/", 
+        new_score)
       .then(this.refreshScores)
       .catch(err => console.log(err));
 
